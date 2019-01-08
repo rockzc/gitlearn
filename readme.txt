@@ -1,5 +1,3 @@
-git is a version control system
-git is free software
+this is zc learn note
 
-oh yeah!!!
-I connected github
+
