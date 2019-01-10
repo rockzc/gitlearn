@@ -222,25 +222,299 @@
         'My name is {0:{1}}.'.format('Fred', 8)       # 输出'My name is Fred    .'  动态指定参数
 
 
+#-- 常用列表常量和操作
+    L = [[1, 2], 'string', {}]                        # 嵌套列表
+    L = list('spam')                                  # 列表初始化
+    L = list(range(0, 4))                             # 列表初始化
+    list(map(ord, 'spam'))                            # 列表解析
+    len(L)                                            # 求列表长度
+    L.count(value)                                    # 求列表中某个值的个数
+    L.append(obj)                                     # 向列表的尾部添加数据，比如append(2)，添加元素2
+    L.insert(index, obj)                              # 向列表的指定index位置添加数据，index及其之后的数据后移
+    L.extend(interable)                               # 通过添加iterable中的元素来扩展列表，比如extend([2])，添加元素2，注意和append的区别
+    L.index(value, [start, [stop]])                   # 返回列表中值value的第一个索引
+    L.pop([index])                                    # 删除并返回index处的元素，默认为删除并返回最后一个元素
+    L.remove(value)                                   # 删除列表中的value值，只删除第一次出现的value的值
+    L.reverse()                                       # 反转列表
+    L.sort(cmp=None, key=None, reverse=False)         # 排序列表
+    a = [1, 2, 3], b = a[10:]                         # 注意，这里不会引发IndexError异常，只会返回一个空的列表[]
+    a = [], a += [1]                                  # 这里实在原有列表的基础上进行操作，即列表的id没有改变
+    a = [], a = a + [1]                               # 这里最后的a要构建一个新的列表，即a的id发生了变化
+  
+#-- 用切片来删除序列的某一段
+    a = [1, 2, 3, 4, 5, 6, 7]
+    a[1:4] = []                                       # a = [1, 5, 6, 7]
+    a = [0, 1, 2, 3, 4, 5, 6, 7]
+    del a[::2]                                        # 去除偶数项(偶数索引的)，a = [1, 3, 5, 7]
+
+#-- 常用字典常量和操作
+    D = {}
+    D = {'spam':2, 'tol':{'ham':1}}                   # 嵌套字典
+    D = dict.fromkeys(['s', 'd'], 8)                  # {'d': 8, 's': 8}
+    D = dict(name = 'tom', age = 12)                  # {'age': 12, 'name': 'tom'}
+    D = dict([('name', 'tom'), ('age', 12)])          # {'age': 12, 'name': 'tom'}
+    D = dict(zip(['name', 'age'], ['tom', 12]))       # {'age': 12, 'name': 'tom'}
+    D.keys()    D.values()    D.items()               # 字典键、值以及键值对
+    D.get(key, default)                               # get函数
+    D.update(D_other)                                 # 合并字典，如果存在相同的键值，D_other的数据会覆盖掉D的数据
+    D.pop(key, [D])                                   # 删除字典中键值为key的项，返回键值为key的值，如果不存在，返回默认值D，否则异常
+    D.popitem()                                       # pop字典中的一项（一个键值对）
+    D.setdefault(k[, d])                              # 设置D中某一项的默认值。如果k存在，则返回D[k]，否则设置D[k]=d，同时返回D[k]。
+    del D                                             # 删除字典
+    del D['key']                                      # 删除字典的某一项
+    if key in D:   if key not in D:                   # 测试字典键是否存在
+    # 字典注意事项：（1）对新索引赋值会添加一项（2）字典键不一定非得是字符串，也可以为任何的不可变对象
+
+
+#-- 字典解析
+    D = {k:8 for k in ['s', 'd']}                     # {'d': 8, 's': 8}
+    D = {k:v for (k, v) in zip(['name', 'age'], ['tom', 12])}
+  
+#-- 字典的特殊方法__missing__：当查找找不到key时，会执行该方法
+    class Dict(dict):
+        def __missing__(self, key):
+            self[key] = []
+            return self[key]
+    dct = Dict()
+    dct["foo"].append(1)    # 这有点类似于collections.defalutdict
+    dct["foo"]              # [1]
+    
+
+#-- 元组和列表的唯一区别在于元组是不可变对象，列表时可变对象
+    a = [1, 2, 3]           # a[1] = 0, OK
+    a = (1, 2, 3)           # a[1] = 0, Error
+    a = ([1, 2])            # a[0][1] = 0, OK
+    a = [(1, 2)]            # a[0][1] = 0, Error
+
+#-- 元组的特殊语法: 逗号和圆括号
+    D = (12)                # 此时D为一个整数 即D = 12
+    D = (12, )              # 此时D为一个元组 即D = (12, )
+ 
+
+#-- 文件基本操作
+    output = open(r'C:\spam', 'w')          # 打开输出文件，用于写
+    input = open('data', 'r')               # 打开输入文件，用于读。打开的方式可以为'w', 'r', 'a', 'wb', 'rb', 'ab'等
+    fp.read([size])                         # size为读取的长度，以byte为单位
+    fp.readline([size])                     # 读一行，如果定义了size，有可能返回的只是一行的一部分
+    fp.readlines([size])                    # 把文件每一行作为一个list的一个成员，并返回这个list。其实它的内部是通过循环调用readline()来实现的。如果提供size参数，size是表示读取内容的总长。
+    fp.readable()                           # 是否可读
+    fp.write(str)                           # 把str写到文件中，write()并不会在str后加上一个换行符
+    fp.writelines(seq)                      # 把seq的内容全部写到文件中(多行一次性写入)
+    fp.writeable()                          # 是否可写
+    fp.close()                              # 关闭文件。
+    fp.flush()                              # 把缓冲区的内容写入硬盘
+    fp.fileno()                             # 返回一个长整型的”文件标签“
+    fp.isatty()                             # 文件是否是一个终端设备文件（unix系统中的）
+    fp.tell()                               # 返回文件操作标记的当前位置，以文件的开头为原点
+    fp.next()                               # 返回下一行，并将文件操作标记位移到下一行。把一个file用于for … in file这样的语句时，就是调用next()函数来实现遍历的。
+    fp.seek(offset[,whence])                # 将文件打操作标记移到offset的位置。whence可以为0表示从头开始计算，1表示以当前位置为原点计算。2表示以文件末尾为原点进行计算。
+    fp.seekable()                           # 是否可以seek
+    fp.truncate([size])                     # 把文件裁成规定的大小，默认的是裁到当前文件操作标记的位置。
+    for line in open('data'): 
+        print(line)                         # 使用for语句，比较适用于打开比较大的文件
+    open('f.txt', encoding = 'latin-1')     # Python3.x Unicode文本文件
+    open('f.bin', 'rb')                     # Python3.x 二进制bytes文件
+    # 文件对象还有相应的属性：buffer closed encoding errors line_buffering name newlines等
+ 
+
+#-- 其他
+    # Python中的真假值含义：1. 数字如果非零，则为真，0为假。 2. 其他对象如果非空，则为真
+    # 通常意义下的类型分类：1. 数字、序列、映射。 2. 可变类型和不可变类型
+
+
+"""语法和语句----语法和语句----语法和语句----语法和语句----语法和语句----语法和语句----语法和语句----语法和语句----语法和语句----语法和语句----语法和语句"""
+
+#-- 赋值语句的形式
+    spam = 'spam'                          # 基本形式
+    spam, ham = 'spam', 'ham'              # 元组赋值形式
+    [spam, ham] = ['s', 'h']               # 列表赋值形式
+    a, b, c, d = 'abcd'                    # 序列赋值形式
+    a, *b, c = 'spam'                      # 序列解包形式（Python3.x中才有）
+    spam = ham = 'no'                      # 多目标赋值运算，涉及到共享引用
+    spam += 42                             # 增强赋值，涉及到共享引用
+
+
+#-- 序列赋值 序列解包
+    [a, b, c] = (1, 2, 3)                  # a = 1, b = 2, c = 3
+    a, b, c, d = "spam"                    # a = 's', b = 'p'
+    a, b, c = range(3)                     # a = 0, b = 1
+    a, *b = [1, 2, 3, 4]                   # a = 1, b = [2, 3, 4]
+    *a, b = [1, 2, 3, 4]                   # a = [1, 2, 3], b = 4
+    a, *b, c = [1, 2, 3, 4]                # a = 1, b = [2, 3], c = 4
+    # 带有*时 会优先匹配*之外的变量 如
+    a, *b, c = [1, 2]                      # a = 1, c = 2, b = []
+
+
+#-- print函数原型
+    print(value, ..., sep=' ', end='\n', file=sys.stdout, flush=False)
+    # 流的重定向
+    print('hello world')                   # 等于sys.stdout.write('hello world')
+    temp = sys.stdout                      # 原有流的保存
+    sys.stdout = open('log.log', 'a')      # 流的重定向
+    print('hello world')                   # 写入到文件log.log
+    sys.stdout.close()
+    sys.stdout = temp                      # 原有流的复原
+ 
+#-- Python中and或or总是返回对象(左边的对象或右边的对象) 且具有短路求值的特性
+    1 or 2 or 3                            # 返回 1
+    1 and 2 and 3                          # 返回 3
+
+
+#-- if/else三元表达符（if语句在行内）
+    A = 1 if X else 2
+    A = 1 if X else (2 if Y else 3)
+    # 也可以使用and-or语句（一条语句实现多个if-else）
+    result = (a > 20 and "big than 20" or a > 10 and "big than 10" or a > 5 and "big than 5")
+
+#-- Python的while语句或者for语句可以带else语句 当然也可以带continue/break/pass语句
+    while a > 1:
+        ......
+    else:
+        ......
+    # else语句会在循环结束后执行，除非在循环中执行了break，同样的还有for语句
+    for i in range(5):
+        ......
+    else:
+        ......
+
+#-- for循环的元组赋值
+    for (a, b) in [(1, 2), (3, 4)]:                   # 最简单的赋值
+    for ((a, b), c) in [((1, 2), 3), ((4, 5), 6)]:    # 自动解包赋值
+    for ((a, b), c) in [((1, 2), 3), ("XY", 6)]:      # 自动解包 a = X, b = Y, c = 6
+    for (a, *b) in [(1, 2, 3), (4, 5, 6)]:            # 自动解包赋值
 
 
 
+#-- 列表解析语法
+    M = [[1,2,3], [4,5,6], [7,8,9]]
+    res = [sum(row) for row in M]                     # G = [6, 15, 24] 一般的列表解析 生成一个列表
+    res = [c * 2 for c in 'spam']                     # ['ss', 'pp', 'aa', 'mm']
+    res = [a * b for a in [1, 2] for b in [4, 5]]     # 多解析过程 返回[4, 5, 8, 10]
+    res = [a for a in [1, 2, 3] if a < 2]             # 带判断条件的解析过程
+    res = [a if a > 0 else 0 for a in [-1, 0, 1]]     # 带判断条件的高级解析过程
+    # 两个列表同时解析：使用zip函数
+    for teama, teamb in zip(["Packers", "49ers"], ["Ravens", "Patriots"]):
+        print(teama + " vs. " + teamb)
+    # 带索引的列表解析：使用enumerate函数
+    for index, team in enumerate(["Packers", "49ers", "Ravens", "Patriots"]):
+        print(index, team)                            # 输出0, Packers \n 1, 49ers \n ......
+
+#-- 生成器表达式
+    G = (sum(row) for row in M)                       # 使用小括号可以创建所需结果的生成器generator object
+    next(G), next(G), next(G)                         # 输出(6, 15, 24)
+    G = {sum(row) for row in M}                       # G = {6, 15, 24} 解析语法还可以生成集合和字典
+    G = {i:sum(M[i]) for i in range(3)}               # G = {0: 6, 1: 15, 2: 24}
 
 
 
+#-- 文档字符串:出现在Module的开端以及其中函数或类的开端 使用三重引号字符串
+    """
+    module document
+    """
+    def func():
+        """
+        function document
+        """
+        print()
+    class Employee:
+        """
+        class document
+        """
+        print()
+    print(func.__doc__)         # 输出函数文档字符串
+    print(Employee.__doc__)     # 输出类的文档字符串
+    
+
+#-- 命名惯例:
+    """
+    以单一下划线开头的变量名(_X)不会被from module import*等语句导入
+    前后有两个下划线的变量名(__X__)是系统定义的变量名，对解释器有特殊意义
+    以两个下划线开头但不以下划线结尾的变量名(__X)是类的本地(私有)变量
+    """
+
+#-- 列表解析 in成员关系测试 map sorted zip enumerate内置函数等都使用了迭代协议
+    'first line' in open('test.txt')   # in测试 返回True或False
+    list(map(str.upper, open('t')))    # map内置函数
+    sorted(iter([2, 5, 8, 3, 1]))      # sorted内置函数
+    list(zip([1, 2], [3, 4]))          # zip内置函数 [(1, 3), (2, 4)]
 
 
+#-- del语句: 手动删除某个变量
+    del X
+
+#-- 获取列表的子表的方法:
+    x = [1,2,3,4,5,6]
+    x[:3]                              # 前3个[1,2,3]
+    x[1:5]                             # 中间4个[2,3,4,5]
+    x[-3:]                             # 最后3个[4,5,6]
+    x[::2]                             # 奇数项[1,3,5]
+    x[1::2]                            # 偶数项[2,4,6]
+    
+#-- 手动迭代：iter和next
+    L = [1, 2]
+    I = iter(L)                        # I为L的迭代器
+    I.next()                           # 返回1
+    I.next()                           # 返回2
+    I.next()                           # Error:StopIteration
 
 
+#-- Python中的可迭代对象
+    """
+    1.range迭代器
+    2.map、zip和filter迭代器
+    3.字典视图迭代器：D.keys()), D.items()等
+    4.文件类型
+    """
 
 
+"""函数语法规则----函数语法规则----函数语法规则----函数语法规则----函数语法规则----函数语法规则----函数语法规则----函数语法规则----函数语法规则----函数语法规则"""
+
+#-- 函数相关的语句和表达式
+    myfunc('spam')                     # 函数调用
+    def myfunc():                      # 函数定义
+    return None                        # 函数返回值
+    global a                           # 全局变量
+    nonlocal x                         # 在函数或其他作用域中使用外层（非全局）变量
+    yield x                            # 生成器函数返回
+    lambda                             # 匿名函数
+ 
+#-- Python函数变量名解析:LEGB原则，即:
+
+    # local(functin) --> encloseing function locals --> global(module) --> build-in(python)
+    
+    # 说明:以下边的函数maker为例 则相对于action而言 X为Local N为Encloseing
 
 
+#-- 嵌套函数举例:工厂函数
+    def maker(N):
+        def action(X):
+            return X ** N
+        return action
+    f = maker(2)                       # pass 2 to N
+    f(3)                               # 9, pass 3 to X
+
+#-- 嵌套函数举例:lambda实例
+    def maker(N):
+        action = (lambda X: X**N)
+        return action
+    f = maker(2)                       # pass 2 to N
+    f(3)      
 
 
-
-
-
-
-
-
+#-- nonlocal和global语句的区别
+    # nonlocal应用于一个嵌套的函数的作用域中的一个名称 例如:
+    start = 100
+    def tester(start):
+        def nested(label):
+            nonlocal start             # 指定start为tester函数内的local变量 而不是global变量start
+            print(label, start)
+            start += 3
+        return nested
+    # global为全局的变量 即def之外的变量
+    def tester(start):
+        def nested(label):
+            global start               # 指定start为global变量start
+            print(label, start)
+            start += 3
+        return nested    
+    
